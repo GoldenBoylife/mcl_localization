@@ -20,6 +20,7 @@ double world_size = 100.0;
 // Random Generators
 random_device rd;
 mt19937 gen(rd());
+//난수 엔진
 
 // Global Functions
 double mod(double first_term, double second_term);
@@ -27,10 +28,9 @@ double gen_real_random();
 
 class Robot {
 public:
-    /*constructor*/
     Robot()
     {
-        /*initial pose*/
+        // Constructor
         x = gen_real_random() * world_size; // robot's x coordinate
         y = gen_real_random() * world_size; // robot's y coordinate
         orient = gen_real_random() * 2.0 * M_PI; // robot's orientation
@@ -40,7 +40,6 @@ public:
         sense_noise = 0.0; //noise of the sensing
     }
 
-    /* robot pose  set*/
     void set(double new_x, double new_y, double new_orient)
     {
         // Set robot new position and orientation
@@ -132,6 +131,7 @@ public:
         for (int i = 0; i < sizeof(landmarks) / sizeof(landmarks[0]); i++) {
             dist = sqrt(pow((x - landmarks[i][0]), 2) + pow((y - landmarks[i][1]), 2));
             prob *= gaussian(dist, sense_noise, measurement[i]);
+            //가우시안 
         }
 
         return prob;
@@ -146,6 +146,7 @@ private:
         // Gaussian random
         normal_distribution<double> gauss_dist(mean, variance);
         return gauss_dist(gen);
+        //gen 에서 난수 나오고
     }
 
     double gaussian(double mu, double sigma, double x)
@@ -158,8 +159,9 @@ private:
 // Functions
 double gen_real_random()
 {
-    // Generate real random between 0 and 1
-    uniform_real_distribution<double> real_dist(0.0, 1.0); //Real
+    /*두 숫자 사이에 균일하게 분포된 숫자 얻음.*/
+    uniform_real_distribution<double> real_dist(0.0, 1.0); 
+    //0과 1 사이 double 숫자 한개 얻음. 
     return real_dist(gen);
 }
 
@@ -226,18 +228,30 @@ void visualization(int n, Robot robot, int step, Robot p[], Robot pr[])
 }
 */
 
-//####   DON'T MODIFY ANYTHING ABOVE HERE! ENTER CODE BELOW ####
 int main()
 {
+    //Practice Interfacing with Robot Class
     Robot myrobot;
-    // Simulate Noise
-    // Forward Noise=5.0, Turn Noise=0.1,Sense Noise=5.0
     myrobot.set_noise(5.0, 0.1, 5.0);
     myrobot.set(30.0, 50.0, M_PI / 2.0);
     myrobot.move(-M_PI / 2.0, 15.0);
-    cout << myrobot.read_sensors() << endl;
+    //cout << myrobot.read_sensors() << endl;
     myrobot.move(-M_PI / 2.0, 10.0);
-    cout << myrobot.read_sensors() << endl;
+    //cout << myrobot.read_sensors() << endl;
+
+    //####   DON'T MODIFY ANYTHING ABOVE HERE! ENTER CODE BELOW ####
+    
+    // Instantiating 1000 Particles each with a random position and orientation
+    int n = 1000;
+    Robot p[n]; 
+    //Your job is to loop over the set of particles
+    //For each particle add noise: Forward_Noise=0.05, Turn_Noise=0.05, and Sense_Noise=5.0
+    //And print its pose on a single line
+    /*각각 point pose에 noise 부여*/
+    for (int i = 0; i < n; i++) {
+        p[i].set_noise(0.05, 0.05, 5.0);
+        cout << p[i].show_pose() << endl;
+    }
 
     return 0;
 }
